@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\HealthCheckController;
@@ -22,10 +23,10 @@ Route::get('healthcheck', [HealthCheckController::class, 'healthCheck']);
 
 // Users (Rota Pública)
 Route::prefix('users')->group(function () {
-    Route::post('register', [UserController::class, 'register']);
+    Route::post('register', [AuthController::class, 'register']);
 
     //Remover o middleware 'auth.basic' para permitir o acesso com as credenciais
-    Route::post('login', [UserController::class, 'login']);
+    Route::post('login', [AuthController::class, 'login']);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'policies.app']], function () {
