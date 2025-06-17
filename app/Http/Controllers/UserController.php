@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\UseCases\User\show;
+use App\UseCases\User\Show;
 use App\UseCases\User\Index;
 use App\UseCases\User\Login;
 use App\UseCases\User\Create;
@@ -147,7 +147,7 @@ class UserController extends Controller
      */
     public function show(string $id): JsonResponse
     {
-        $response = (new show($id, Auth::user()->company_id))->handle();
+        $response = (new Show($id, Auth::user()->company_id))->handle();
 
         return $this->response(
             new DefaultResponse(

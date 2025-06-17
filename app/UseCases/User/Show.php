@@ -6,7 +6,7 @@ use Throwable;
 use App\UseCases\BaseUseCase;
 use App\Repositories\User\Find;
 
-class show extends BaseUseCase
+class Show extends BaseUseCase
 {
     /**
      * Id do usuário
