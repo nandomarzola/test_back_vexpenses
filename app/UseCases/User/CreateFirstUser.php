@@ -10,6 +10,7 @@ use App\UseCases\Params\User\CreateFirstUserParams;
 use App\Domains\Company\Create as CreateCompanyDomain;
 use App\Repositories\User\Create as CreateUserRepository;
 use App\Repositories\Company\Create as CreateCompanyRepository;
+use Illuminate\Support\Facades\DB;
 
 class CreateFirstUser extends BaseUseCase
 {
@@ -114,13 +115,27 @@ class CreateFirstUser extends BaseUseCase
      */
     public function handle()
     {
+        /**
+         * Adiciona um DB transaction para garantir que todas as operações sejam atômicas
+         * pois hoje ele cria primeiro a company e depois o user, com isso se voce tentar cadastrar um user ja existente
+         * ele cria a company e depois falha ao criar o user, deixando a company criada
+         */
+        DB::beginTransaction();
+
         try {
             $companyDomain = $this->validateCompany();
             $this->createCompany($companyDomain);
             $userDomain = $this->validateUser();
             $this->createUser($userDomain);
             $this->createToken();
+
+            //Caso tudo ocorra bem, cria a company e o user
+            DB::commit();
         } catch (Throwable $th) {
+
+            //Caso ocorra algum erro, desfaz as alterações no banco de dados
+            DB::rollBack();
+
             $this->defaultErrorHandling(
                 $th,
                 [

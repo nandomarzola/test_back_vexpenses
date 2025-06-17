@@ -88,9 +88,14 @@ class Create extends BaseDomain
      */
     protected function checkEmail(): void
     {
+        /**
+         * Apenas uma melhoria na mensagem de erro, para nao gerar confusão no usuário
+         * Já que o CanUseEmail retorna true se o e-mail é único
+         * e false se o e-mail já existe no sistema
+         */
         if (!(new CanUseEmail($this->email))->handle()) {
             throw new InternalErrorException(
-                'Não é possível adicionar o E-mail informado',
+                'E-mail já cadastrado no sistema',
                 0
             );
         }
@@ -103,9 +108,15 @@ class Create extends BaseDomain
      */
     protected function checkDocumentNumber(): void
     {
+        /**
+         * Apenas uma melhoria na mensagem de erro, para nao gerar confusão no usuário
+         * Já que o CanUseDocumentNumber retorna true se o CPF é único
+         * e false se o CPF já existe no sistema
+         */
+
         if (!(new CanUseDocumentNumber($this->documentNumber))->handle()) {
             throw new InternalErrorException(
-                'Não é possível adicionar o CPF informado',
+                'CPF já cadastrado no sistema',
                 0
             );
         }
