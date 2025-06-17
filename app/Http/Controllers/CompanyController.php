@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Company;
 use App\UseCases\Company\Show;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
@@ -11,8 +10,8 @@ use App\Http\Responses\DefaultResponse;
 use App\Http\Requests\Company\UpdateRequest;
 use App\Http\Resources\Company\ShowResource;
 use App\Http\Resources\Company\UpdateResource;
-use App\Domains\Company\Update as UpdateDomain;
-use App\Repositories\Company\Update as CompanyUpdate;
+use App\UseCases\Params\Company\UpdateParams;
+use App\UseCases\Company\Update as CompanyUpdate;
 
 class CompanyController extends Controller
 {
@@ -43,17 +42,20 @@ class CompanyController extends Controller
      */
     public function update(UpdateRequest $request): JsonResponse
     {
-        $dominio = (new UpdateDomain(
+        /**
+         * Removendo a logica de buscar o CompanyUpdate diretamente do Repositorie e buscando de seu UseCase
+         * respeitando os padrões de arquitetura DDD.
+         */
+        $params = new UpdateParams(
             Auth::user()->company_id,
-            $request->name,
-        ))->handle();
-        (new CompanyUpdate($dominio))->handle();
+            $request->name
+        );
 
-        $resposta = Company::find(Auth::user()->company_id)->first()->toArray();
+        $response = (new CompanyUpdate($params))->handle();
 
         return $this->response(
             new DefaultResponse(
-                new UpdateResource($resposta)
+                new UpdateResource($response)
             )
         );
     }
