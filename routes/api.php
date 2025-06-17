@@ -24,7 +24,8 @@ Route::get('healthcheck', [HealthCheckController::class, 'healthCheck']);
 Route::prefix('users')->group(function () {
     Route::post('register', [UserController::class, 'register']);
 
-    Route::post('login', [UserController::class, 'login'])->middleware('auth.basic');
+    //Remover o middleware 'auth.basic' para permitir o acesso com as credenciais
+    Route::post('login', [UserController::class, 'login']);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'policies.app']], function () {
