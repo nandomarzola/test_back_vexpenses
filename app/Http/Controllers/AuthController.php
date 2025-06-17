@@ -69,40 +69,30 @@ class AuthController extends Controller
          * e se estiverem corretas, ele cria o usuário e loga, caso contrário, retorna um erro de autenticação.
          */
 
-        try {
-            // Verifica se o usuário já está autenticado
-            $userId = Auth::id();
+        // Verifica se o usuário já está autenticado
+        $userId = Auth::id();
 
-            // Se não estiver autenticado ele entra no nessa logicca
-            if (!$userId) {
-                // Se não estiver autenticado, tenta autenticar através das credenciais vericando no case de AuthenticateUser
-                $credentials = $request->only('email', 'password');
+        // Se não estiver autenticado ele entra no nessa logicca
+        if (!$userId) {
+            // Se não estiver autenticado, tenta autenticar através das credenciais vericando no case de AuthenticateUser
+            $credentials = $request->only('email', 'password');
 
-                $userId = (new AuthenticateUser(
-                    $credentials['email'] ?? '',
-                    $credentials['password'] ?? ''
-                ))->handle();
-            }
-
-            //pega o token do usuario
-            $response = (new Login($userId))->handle();
-
-            return $this->response(
-                new DefaultResponse(
-                    new LoginResource(
-                        $response
-                    )
-                )
-            );
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'code' => 500,
-                'errors' => [
-                    ['message' => $e->getMessage()]
-                ],
-            ], 500);
+            $userId = (new AuthenticateUser(
+                $credentials['email'] ?? '',
+                $credentials['password'] ?? ''
+            ))->handle();
         }
+
+        //pega o token do usuario
+        $response = (new Login($userId))->handle();
+
+        return $this->response(
+            new DefaultResponse(
+                new LoginResource(
+                    $response
+                )
+            )
+        );
     }
 
     /**

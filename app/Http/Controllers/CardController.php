@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\UseCases\Card\Register;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Card\CreateResource;
+use App\Http\Resources\Card\ShowResource;
 use App\Http\Responses\DefaultResponse;
 use App\UseCases\Card\Show;
 
@@ -14,7 +16,7 @@ class CardController extends Controller
     /**
      * Exibe dados de um cartão
      *
-     * POST api/users/{id}/card
+     * GET api/users/{id}/card
      *
      * @return JsonResponse
      */
@@ -23,7 +25,9 @@ class CardController extends Controller
         $response = (new Show($userId))->handle();
 
         return $this->response(
-            new DefaultResponse($response['data'])
+            new DefaultResponse(
+                new ShowResource($response['data'])
+            )
         );
     }
 
@@ -39,7 +43,9 @@ class CardController extends Controller
         $response = (new Register($userId, $request->pin, $request->card_id))->handle();
 
         return $this->response(
-            new DefaultResponse($response['data'])
+            new DefaultResponse(
+                new CreateResource($response['data'])
+            )
         );
     }
 }
