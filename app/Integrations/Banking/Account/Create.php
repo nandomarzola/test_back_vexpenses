@@ -51,19 +51,32 @@ class Create extends Gateway
      */
     public function handle(): array
     {
-        $url = $this->requestUrl();
 
-        $request = $this->sendRequest(
-            method: 'post',
-            url:    $url,
-            action: 'CREATE_ACCOUNT',
-            params: [
-                'name'            => $this->name,
-                'document_number' => $this->documentNumber,
-                'email'           => $this->email,
+        /**
+         * Criado mock de retorno da API para que o fluxo de criação de conta funcione
+         * sem a necessidade de uma integração real com o banco.
+         */
+
+        return [
+            'data' => [
+                'id' => 'e3b0c442-98fc-4f1a-b04f-8d43c57f9a3b',
+                'created_at' => date('Y-m-d H:i:s'),
             ]
-        );
+        ];
 
-        return $this->formatDetailsResponse($request);
+        // $url = $this->requestUrl();
+
+        // $request = $this->sendRequest(
+        //     method: 'post',
+        //     url:    $url,
+        //     action: 'CREATE_ACCOUNT',
+        //     params: [
+        //         'name'            => $this->name,
+        //         'document_number' => $this->documentNumber,
+        //         'email'           => $this->email,
+        //     ]
+        // );
+
+        // return $this->formatDetailsResponse($request);
     }
 }

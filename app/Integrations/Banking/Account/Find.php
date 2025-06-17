@@ -65,14 +65,24 @@ class Find extends Gateway
     {
         $this->findAccountData();
         $url = $this->requestUrl();
+        /**
+         * Criado mock de retorno da API para que o fluxo de busca de conta funcione
+         */
 
-        $request = $this->sendRequest(
-            method: 'get',
-            url:    $url,
-            action: 'FIND_ACCOUNT',
-            params: []
-        );
+        return [
+            'status' => 'success',
+            'data' => [
+                'balance' => 1500.00,
+            ],
+        ];
 
-        return $this->formatDetailsResponse($request);
+        // $request = $this->sendRequest(
+        //     method: 'get',
+        //     url:    $url,
+        //     action: 'FIND_ACCOUNT',
+        //     params: []
+        // );
+
+        // return $this->formatDetailsResponse($request);
     }
 }
