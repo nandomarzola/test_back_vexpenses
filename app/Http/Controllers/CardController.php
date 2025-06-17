@@ -7,7 +7,7 @@ use App\UseCases\Card\Register;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\DefaultResponse;
-use App\Integrations\Banking\Card\Find;
+use App\UseCases\Card\Show;
 
 class CardController extends Controller
 {
@@ -20,7 +20,7 @@ class CardController extends Controller
      */
     public function show(string $userId): JsonResponse
     {
-        $response = (new Find($userId))->handle();
+        $response = (new Show($userId))->handle();
 
         return $this->response(
             new DefaultResponse($response['data'])
