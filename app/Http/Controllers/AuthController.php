@@ -81,6 +81,18 @@ class AuthController extends Controller
                 $credentials['email'] ?? '',
                 $credentials['password'] ?? ''
             ))->handle();
+
+            if (!$userId) {
+                return $this->response(
+                    new DefaultResponse(
+                        null,
+                        false,
+                        [],
+                        401
+                    ),
+                    401
+                );
+            }
         }
 
         //pega o token do usuario

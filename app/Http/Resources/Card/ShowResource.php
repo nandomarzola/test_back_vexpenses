@@ -14,9 +14,6 @@ class ShowResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'number'    => $this->resource['number'],
-            'pin'       => $this->resource['pin'],
-        ];
+        return $this->resource;
     }
 }

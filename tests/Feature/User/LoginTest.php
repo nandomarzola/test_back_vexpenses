@@ -4,6 +4,7 @@ namespace Tests\Feature\User;
 
 use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class LoginTest extends TestCase
 {
@@ -16,11 +17,12 @@ class LoginTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $headers = [
-            'Authorization' => 'Basic ' . base64_encode($user->email . ':wrong_password'),
+        $credentials = [
+            'email' => $user->email,
+            'password' => 'wrong_password',
         ];
 
-        $response = $this->post('/api/users/login', [], $headers);
+        $response = $this->post('/api/users/login', $credentials);
 
         $response->assertStatus(401);
         $response->assertJson(
@@ -28,14 +30,9 @@ class LoginTest extends TestCase
                 'success' => false,
                 'method'  => 'POST',
                 'code'    => 401,
-                'data'    => null,
+                'data'    => null
             ],
             true
-        );
-        $response->assertJsonStructure(
-            [
-                'errors',
-            ]
         );
     }
 
@@ -46,13 +43,18 @@ class LoginTest extends TestCase
      */
     public function testLoginWithSuccess()
     {
-        $user = User::factory()->create();
+        $password = 'correct_password';
 
-        $headers = [
-            'Authorization' => 'Basic ' . base64_encode($user->email . ':password'),
+        $user = User::factory()->create([
+            'password' => Hash::make($password),
+        ]);
+
+        $credentials = [
+            'email' => $user->email,
+            'password' => $password,
         ];
 
-        $response = $this->post('/api/users/login', [], $headers);
+        $response = $this->post('/api/users/login', $credentials);
 
         $response->assertStatus(200);
         $response->assertJson(

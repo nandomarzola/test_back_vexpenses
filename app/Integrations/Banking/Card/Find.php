@@ -67,21 +67,21 @@ class Find extends Gateway
 
         $url = $this->requestUrl();
 
-        return [
-            'data' => [
-                'id'       => '36545993895',
-                'number'   => '123456789',
-                'pin' => '988058'
-            ],
-        ];
+        // return [
+        //     'data' => [
+        //         'id'       => '36545993895',
+        //         'number'   => '123456789',
+        //         'pin' => '988058'
+        //     ],
+        // ];
 
-        // $request = $this->sendRequest(
-        //     method: 'get',
-        //     url:    $url,
-        //     action: 'FIND_CARD',
-        //     params: []
-        // );
+        $request = $this->sendRequest(
+            method: 'get',
+            url: $url,
+            action: 'FIND_CARD',
+            params: []
+        );
 
-        // return $this->formatDetailsResponse($request);
+        return $this->formatDetailsResponse($request);
     }
 }

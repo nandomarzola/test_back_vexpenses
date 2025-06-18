@@ -78,20 +78,20 @@ class UpdateStatus extends Gateway
          * mock de retorno da API para que o fluxo de atualização de status funcione
          */
 
-        return [
-            'status' => 'success',
-            'data' => [
-                'status' => 'active',
-            ]
-        ];
+        // return [
+        //     'status' => 'success',
+        //     'data' => [
+        //         'status' => 'active',
+        //     ]
+        // ];
 
-        // $request = $this->sendRequest(
-        //     method: 'put',
-        //     url: $url,
-        //     action: 'UPDATE_STATUS_ACCOUNT',
-        //     params: []
-        // );
+        $request = $this->sendRequest(
+            method: 'put',
+            url: $url,
+            action: 'UPDATE_STATUS_ACCOUNT',
+            params: []
+        );
 
-        // return $this->formatDetailsResponse($request);
+        return $this->formatDetailsResponse($request);
     }
 }

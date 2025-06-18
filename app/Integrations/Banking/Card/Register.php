@@ -99,23 +99,23 @@ class Register extends Gateway
          * Mock criação de cartão para continuar fluxo
          */
 
-        return [
-            'data' => [
-                'pin' => $this->domain->pin,
-                'id'  => $this->domain->cardId,
-            ],
-        ];
-
-        // $request = $this->sendRequest(
-        //     method: 'post',
-        //     url:    $url,
-        //     action: 'REGISTER_CARD',
-        //     params: [
+        // return [
+        //     'data' => [
         //         'pin' => $this->domain->pin,
         //         'id'  => $this->domain->cardId,
-        //     ]
-        // );
+        //     ],
+        // ];
 
-        // return $this->formatDetailsResponse($request);
+        $request = $this->sendRequest(
+            method: 'post',
+            url: $url,
+            action: 'REGISTER_CARD',
+            params: [
+                'pin' => $this->domain->pin,
+                'id'  => $this->domain->cardId,
+            ]
+        );
+
+        return $this->formatDetailsResponse($request);
     }
 }

@@ -14,9 +14,6 @@ class CreateResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'id'    => $this->resource['id'],
-            'pin'       => $this->resource['pin'],
-        ];
+        return $this->resource;
     }
 }

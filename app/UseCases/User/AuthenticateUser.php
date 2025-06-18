@@ -41,13 +41,10 @@ class AuthenticateUser extends BaseUseCase
      * @throws InternalErrorException
      * @return string
      */
-    public function handle(): string
+    public function handle(): ?string
     {
         if (!Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
-            throw new InternalErrorException(
-                'Usuário ou senha inválidos',
-                0
-            );
+            return null;
         }
 
         $this->userId = (string) Auth::id();
