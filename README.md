@@ -1,66 +1,67 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Projeto - Melhorias e Ajustes
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Teste técnico - backend Cartões - VEXPENSES
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Melhorias e Ajustes Realizados
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Remoção do middleware `auth.basic` da rota de login**  
+  O middleware exigia autenticação básica para acessar a própria rota de login, o que não fazia sentido. A autenticação agora ocorre dentro do método, tornando o fluxo mais natural.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Validação aprimorada de login**  
+  A validação agora usa os campos `email` e `password`, que são informados e salvos no cadastro. Isso deixa o fluxo de autenticação mais claro e alinhado com práticas comuns de APIs.
 
-## Learning Laravel
+- **Correção de problema no cadastro de usuários com CPF, CNPJ e e-mail duplicados**  
+  Quando o usuário tentava cadastrar um CPF ou e-mail já existente, mas com um CNPJ diferente, o sistema criava uma nova empresa, porém falhava na criação do usuário, deixando a empresa salva sem vínculo.  
+  Para resolver, o processo de criação de usuário e empresa agora está dentro de uma transação de banco de dados (`DB::transaction`). Assim, se qualquer parte falhar, nada é salvo.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Mensagens de erro aprimoradas**  
+  O sistema agora informa exatamente qual dado está duplicado: CPF, CNPJ ou e-mail. Isso facilita o entendimento e uso da API.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **Refatoração da atualização da empresa seguindo DDD**  
+  A lógica de update foi removida da controller e encapsulada em um Use Case específico (`UseCases/Company/Update`), com um objeto de parâmetros (`UseCases/Params/Company/UpdateParams`).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Refatoração do CardController para uso de Use Cases**  
+  O endpoint de exibição de cartão (`CardController@show`) foi refatorado para usar um Use Case (`UseCases/Card/Show`) que encapsula a lógica de busca e tratamento de erros, deixando a controller mais limpa e o código mais testável.
 
-## Laravel Sponsors
+- **Separação das responsabilidades de autenticação**  
+  As funcionalidades de login e registro foram desacopladas da controller de usuários, criando uma `AuthController` dedicada. A lógica de autenticação foi encapsulada em um Use Case (`AuthenticateUser`), seguindo a arquitetura limpa.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- **Uso de Resources para padronização das respostas**  
+  Para o `CardController`, foram criados Resources específicos (`ShowResource` e `CreateResource`) para encapsular os dados retornados nas ações de show e create, garantindo respostas consistentes e organizadas.
 
-### Premium Partners
+- **Refatoração do teste de login (`tests/Feature/User/LoginTest.php`)**  
+  Removi o uso do header de autenticação básica e passei as credenciais diretamente no corpo da requisição, deixando o teste mais alinhado com a lógica atual da API.
+  
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+## Melhorias não implementadas
 
-## Contributing
+### Nomes de arquivos e classes em lowercase
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Alguns arquivos e classes estão com nomes em lowercase, por exemplo:  
+  `App\UseCases\User\show`  
+  
+  O correto seria usar PascalCase, assim:  
+  `App\UseCases\User\Show`  
+  
+  Essa diferença pode causar problemas com autoload, vai contra o SOLID e deixa o projeto menos organizado.
 
-## Code of Conduct
+### Falta de interfaces para Use Cases
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Os Use Cases estão lá, mas não tem nenhuma interface definida pra eles ou pra outras partes do código.  
 
-## Security Vulnerabilities
+  Isso pode complicar pra trocar coisas, fazer testes ou dar manutenção depois, porque quebra um pouco a ideia do SOLID de depender de abstrações.  
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+  Ter interfaces ajuda a deixar o código mais flexível, desacoplado e fácil de mexer.
 
-## License
+  ## Observação
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+O teste em si não pedia modificações diretas no código, já que a avaliação será feita definitivamente na conversa com os gestores.  
+Porém, para um melhor entendimento do código, fiz o clone do projeto, rodei as migrations e testei endpoint por endpoint para entender o fluxo do sistema.  
+
+Nesse fluxo, nos endpoints de `card` e `company`, tive um problema com a integração do BaaS (Banking as a Service), pois a URL configurada no arquivo `.env` (`https://api.banking.com.br/`) está fora do ar.  
+
+Com isso, mockei o retorno dessas integrações para que meus testes continuassem e o fluxo do sistema seguisse normalmente.  
+
+Dessa forma, consegui entender melhor a regra de negócio e onde cada coisa estava acontecendo, validando assim 100% dos endpoints.
